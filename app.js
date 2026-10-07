@@ -1,4 +1,4 @@
-/* Mampat clone — 100% client-side. PDF.js untuk baca+render, pdf-lib untuk tulis. */
+/* Senkirss — 100% client-side. PDF.js untuk baca+render, pdf-lib untuk tulis. */
 pdfjsLib.GlobalWorkerOptions.workerSrc =
   "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
 
@@ -55,7 +55,7 @@ document.querySelectorAll(".unitBtn").forEach((b) =>
     els.unit = b.dataset.unit; state.unit = b.dataset.unit;
     document.querySelectorAll(".unitBtn").forEach((x) => {
       const on = x === b;
-      x.className = "unitBtn px-4 font-bold " + (on ? "bg-green-600 text-white" : "text-stone-500");
+      x.className = "unitBtn px-4 font-bold " + (on ? "bg-[#287A74] text-white" : "text-stone-500");
     });
     syncTarget(false);
   })
@@ -66,7 +66,7 @@ document.querySelectorAll(".preset").forEach((b) =>
     els.unit = u; state.unit = u;
     document.querySelectorAll(".unitBtn").forEach((x) => {
       const on = x.dataset.unit === u;
-      x.className = "unitBtn px-4 font-bold " + (on ? "bg-green-600 text-white" : "text-stone-500");
+      x.className = "unitBtn px-4 font-bold " + (on ? "bg-[#287A74] text-white" : "text-stone-500");
     });
     els.targetNum.value = n; syncTarget(false);
     document.getElementById("top").scrollIntoView({ behavior: "smooth" });
@@ -335,8 +335,8 @@ async function finish(bytes, log, t0, note, q, ok = true) {
   els.qBar.style.width = q + "%";
   const meet = bytes.length <= els.targetBytes;
   els.resBadge.textContent = meet ? "✓ di bawah target" : "⚠ di atas target — lihat catatan";
-  els.resBadge.className = "text-xs font-bold px-2 py-1 rounded-full " + (meet ? "bg-green-600 text-white" : "bg-amber-500 text-white");
-  state.resultName = state.fileName.replace(/\.pdf$/i, "") + "-mampat-" + els.targetLabel.textContent.replace(/\s/g, "") + ".pdf";
+  els.resBadge.className = "text-xs font-bold px-2 py-1 rounded-full " + (meet ? "bg-[#287A74] text-white" : "bg-amber-500 text-white");
+  state.resultName = state.fileName.replace(/\.pdf$/i, "") + "-senkirss-" + els.targetLabel.textContent.replace(/\s/g, "") + ".pdf";
   try { await renderPreview(els.prevOut, bytes, 1.2); } catch { els.prevOut.innerHTML = "<span class='text-sm p-4'>Pratinjau gagal, tapi file tetap bisa disimpan.</span>"; }
   els.resultBox.scrollIntoView({ behavior: "smooth", block: "nearest" });
 }

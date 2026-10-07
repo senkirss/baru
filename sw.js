@@ -1,4 +1,4 @@
-const C = "mampat-v1";
+const C = "senkirss-v1";
 self.addEventListener("install", (e) => {
   e.waitUntil(caches.open(C).then((c) => c.addAll(["./", "./index.html", "./app.js", "./manifest.json"])).then(() => self.skipWaiting()));
 });

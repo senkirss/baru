@@ -3,22 +3,22 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mampat — Kompres PDF Sesuai Ukuran</title>
+<title>Senkirss — Kompres PDF Sesuai Ukuran</title>
 <meta name="description" content="Kompres PDF ke ukuran target bebas. 100% di perangkatmu, teks & link tetap utuh.">
 <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#16a34a">
+<meta name="theme-color" content="#287A74">
 <script src="https://cdn.tailwindcss.com"></script>
 <script>
-tailwind.config = { theme: { extend: { colors: { brand: {50:'#f0fdf4',100:'#dcfce7',500:'#22c55e',600:'#16a34a',700:'#15803d',900:'#14532d'} } } } }
+tailwind.config = { theme: { extend: { colors: { brand: {50:'#EFFAF6',100:'#AEEED3',300:'#7CCBBB',500:'#55A9A0',600:'#287A74',700:'#1F615C',900:'#143E3B'} } } } }
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
 <style>
   html{scroll-behavior:smooth}
-  .drop-active{outline:3px dashed #16a34a !important;background:#f0fdf4 !important}
+  .drop-active{outline:3px dashed #287A74 !important;background:#AEEED3 !important}
   details[open] summary .plus{transform:rotate(45deg)}
   .plus{transition:transform .2s}
-  input[type=range]{accent-color:#16a34a}
+  input[type=range]{accent-color:#287A74}
   canvas{max-width:100%;height:auto}
   #dropOverlay{backdrop-filter:blur(2px)}
 </style>
@@ -28,13 +28,13 @@ tailwind.config = { theme: { extend: { colors: { brand: {50:'#f0fdf4',100:'#dcfc
 <!-- NAV -->
 <header class="sticky top-0 z-40 bg-white/85 backdrop-blur border-b border-stone-200">
   <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
-    <a href="#top" class="text-2xl font-extrabold tracking-tight"><span class="text-green-600">mampat</span><span class="text-stone-400 font-normal text-sm ml-1 hidden sm:inline">kompres PDF sesuai ukuran</span></a>
+    <a href="#top" class="text-2xl font-extrabold tracking-tight"><span class="text-[#287A74]">senkirss</span><span class="text-stone-400 font-normal text-sm ml-1 hidden sm:inline">kompres PDF sesuai ukuran</span></a>
     <nav class="hidden md:flex gap-6 text-sm font-medium text-stone-600">
-      <a href="#cara" class="hover:text-green-700">Cara kerja</a>
-      <a href="#beda" class="hover:text-green-700">Bedanya</a>
-      <a href="#faq" class="hover:text-green-700">FAQ</a>
+      <a href="#cara" class="hover:text-[#287A74]">Cara kerja</a>
+      <a href="#beda" class="hover:text-[#287A74]">Bedanya</a>
+      <a href="#faq" class="hover:text-[#287A74]">FAQ</a>
     </nav>
-    <button id="btnInstall" class="bg-stone-900 text-white text-sm font-semibold px-4 py-2 rounded-full hover:bg-green-700 transition">Pasang aplikasi</button>
+    <button id="btnInstall" class="bg-stone-900 text-white text-sm font-semibold px-4 py-2 rounded-full hover:bg-[#1F615C] transition">Pasang aplikasi</button>
   </div>
 </header>
 
@@ -42,15 +42,15 @@ tailwind.config = { theme: { extend: { colors: { brand: {50:'#f0fdf4',100:'#dcfc
 
   <!-- HERO -->
   <div class="text-center pt-10 pb-6">
-    <span class="inline-flex items-center gap-2 bg-green-100 text-green-800 text-xs font-semibold px-3 py-1.5 rounded-full">🔒 Diproses di perangkatmu · 0 byte dikirim ke server</span>
+    <span class="inline-flex items-center gap-2 bg-[#AEEED3] text-[#1F615C] text-xs font-semibold px-3 py-1.5 rounded-full">🔒 Diproses di perangkatmu · 0 byte dikirim ke server</span>
     <p class="mt-4 text-sm font-semibold tracking-wide text-stone-500">KOMPRES PDF · TARGET UKURAN BEBAS</p>
     <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight mt-2">Mau berapa ukurannya?</h1>
-    <p class="max-w-2xl mx-auto mt-4 text-stone-600">Tulis angkanya, <b>Mampat</b> yang mengatur sisanya. <b>200 KB</b> untuk unggah berkas pendaftaran, <b>2 MB</b> untuk lampiran email, <b>50 MB</b> untuk arsip. Hasilnya tidak akan melewati angka itu, dan file kamu tidak pernah meninggalkan perangkat ini.</p>
+    <p class="max-w-2xl mx-auto mt-4 text-stone-600">Tulis angkanya, <b>Senkirss</b> yang mengatur sisanya. <b>200 KB</b> untuk unggah berkas pendaftaran, <b>2 MB</b> untuk lampiran email, <b>50 MB</b> untuk arsip. Hasilnya tidak akan melewati angka itu, dan file kamu tidak pernah meninggalkan perangkat ini.</p>
     <div class="flex flex-wrap justify-center gap-2 mt-4 text-sm">
       <span class="text-stone-500 py-1">Contoh:</span>
-      <button data-preset="200|KB" class="preset px-3 py-1 rounded-full border hover:border-green-600 hover:text-green-700">200 KB</button>
-      <button data-preset="2|MB" class="preset px-3 py-1 rounded-full border hover:border-green-600 hover:text-green-700">2 MB</button>
-      <button data-preset="50|MB" class="preset px-3 py-1 rounded-full border hover:border-green-600 hover:text-green-700">50 MB</button>
+      <button data-preset="200|KB" class="preset px-3 py-1 rounded-full border hover:border-[#287A74] hover:text-[#287A74]">200 KB</button>
+      <button data-preset="2|MB" class="preset px-3 py-1 rounded-full border hover:border-[#287A74] hover:text-[#287A74]">2 MB</button>
+      <button data-preset="50|MB" class="preset px-3 py-1 rounded-full border hover:border-[#287A74] hover:text-[#287A74]">50 MB</button>
     </div>
   </div>
 
@@ -60,7 +60,7 @@ tailwind.config = { theme: { extend: { colors: { brand: {50:'#f0fdf4',100:'#dcfc
       <!-- STEP 1 -->
       <div class="bg-white rounded-2xl border border-stone-200 p-5 shadow-sm">
         <h2 class="font-bold text-lg"><span class="text-stone-400 font-normal mr-1">1</span> Pilih PDF</h2>
-        <div id="dropzone" class="mt-3 border-2 border-dashed border-stone-300 rounded-xl p-8 text-center cursor-pointer hover:border-green-600 hover:bg-green-50/50 transition">
+        <div id="dropzone" class="mt-3 border-2 border-dashed border-stone-300 rounded-xl p-8 text-center cursor-pointer hover:border-[#287A74] hover:bg-[#AEEED3]/40 transition">
           <div id="dzEmpty">
             <div class="text-4xl">📄</div>
             <p class="font-bold mt-2">Tarik PDF ke sini <span class="font-normal text-stone-500">atau klik untuk memilih</span></p>
@@ -74,7 +74,7 @@ tailwind.config = { theme: { extend: { colors: { brand: {50:'#f0fdf4',100:'#dcfc
                 <p id="warnSig" class="hidden mt-2 text-xs bg-amber-50 border border-amber-200 text-amber-800 rounded-lg p-2">⚠️ PDF ini ada tanda tangan digital. Mengompres akan membuat tanda tangannya tidak sah. Tampilan tanda tangan tetap ada.</p>
                 <p id="warnLocked" class="hidden mt-2 text-xs bg-red-50 border border-red-200 text-red-700 rounded-lg p-2">🔒 PDF terkunci kata sandi. Buka dulu kuncinya, lalu coba lagi.</p>
               </div>
-              <button id="btnChange" class="shrink-0 text-sm font-semibold border px-3 py-1.5 rounded-full hover:border-green-600 hover:text-green-700">Ganti</button>
+              <button id="btnChange" class="shrink-0 text-sm font-semibold border px-3 py-1.5 rounded-full hover:border-[#287A74] hover:text-[#287A74]">Ganti</button>
             </div>
             <div id="fileInfo" class="mt-3 bg-stone-50 border rounded-xl p-3 text-sm grid grid-cols-3 gap-2 text-center">
               <div><div class="text-stone-500 text-xs">Halaman</div><div id="infoPages" class="font-bold">—</div></div>
@@ -92,9 +92,9 @@ tailwind.config = { theme: { extend: { colors: { brand: {50:'#f0fdf4',100:'#dcfc
         <h2 class="font-bold text-lg"><span class="text-stone-400 font-normal mr-1">2</span> Ukuran maksimal</h2>
         <p class="text-xs text-stone-500">1 MB = 1.024 KB</p>
         <div class="flex gap-2 mt-3">
-          <input id="targetNum" type="number" min="10" value="500" class="w-full text-2xl font-extrabold border rounded-xl px-4 py-2 outline-none focus:border-green-600">
+          <input id="targetNum" type="number" min="10" value="500" class="w-full text-2xl font-extrabold border rounded-xl px-4 py-2 outline-none focus:border-[#287A74]">
           <div class="flex rounded-xl border overflow-hidden shrink-0">
-            <button data-unit="KB" class="unitBtn px-4 font-bold bg-green-600 text-white">KB</button>
+            <button data-unit="KB" class="unitBtn px-4 font-bold bg-[#287A74] text-white">KB</button>
             <button data-unit="MB" class="unitBtn px-4 font-bold text-stone-500">MB</button>
           </div>
         </div>
@@ -115,17 +115,17 @@ tailwind.config = { theme: { extend: { colors: { brand: {50:'#f0fdf4',100:'#dcfc
               </div>
             </div>
             <label class="flex items-start gap-3 cursor-pointer border rounded-xl p-3">
-              <input type="checkbox" id="optBW" class="mt-1 w-4 h-4 accent-green-600">
+              <input type="checkbox" id="optBW" class="mt-1 w-4 h-4 accent-[#287A74]">
               <span><b>Hitam-putih</b><br><span class="text-stone-500 text-xs">Lebih kecil. Pas untuk scan KTP, ijazah, dan dokumen teks.</span></span>
             </label>
             <label class="flex items-start gap-3 cursor-pointer border rounded-xl p-3">
-              <input type="checkbox" id="optKeep" class="mt-1 w-4 h-4 accent-green-600" checked>
+              <input type="checkbox" id="optKeep" class="mt-1 w-4 h-4 accent-[#287A74]" checked>
               <span><b>Wajib jaga teks</b><br><span class="text-stone-500 text-xs">Jangan pernah ubah halaman jadi gambar. Kalau target tidak tercapai, kamu dapat hasil terkecil yang teksnya tetap utuh.</span></span>
             </label>
           </div>
         </details>
 
-        <button id="btnCompress" disabled class="mt-4 w-full bg-green-600 disabled:bg-stone-200 disabled:text-stone-400 disabled:cursor-not-allowed text-white font-bold text-lg py-3 rounded-xl hover:bg-green-700 transition">Pilih PDF dulu</button>
+        <button id="btnCompress" disabled class="mt-4 w-full bg-[#287A74] disabled:bg-stone-200 disabled:text-stone-400 disabled:cursor-not-allowed text-white font-bold text-lg py-3 rounded-xl hover:bg-[#1F615C] transition">Pilih PDF dulu</button>
         <p class="text-center text-xs text-stone-500 mt-2">Contoh: 12,4 MB → 480 KB · setelah PDF dipilih, pratinjau ikut berubah</p>
       </div>
     </section>
@@ -142,14 +142,14 @@ tailwind.config = { theme: { extend: { colors: { brand: {50:'#f0fdf4',100:'#dcfc
           <div id="prevOrig" class="border rounded-xl overflow-hidden bg-stone-100 min-h-[220px] flex items-center justify-center cursor-zoom-in"><span class="text-stone-400 text-sm p-6 text-center">Belum ada PDF</span></div>
         </div>
         <div>
-          <p class="text-xs font-bold text-center mb-1 text-green-700">HASIL</p>
-          <div id="prevOut" class="border border-green-200 rounded-xl overflow-hidden bg-stone-100 min-h-[220px] flex items-center justify-center cursor-zoom-in"><span class="text-stone-400 text-sm p-6 text-center">—</span></div>
+          <p class="text-xs font-bold text-center mb-1 text-[#287A74]">HASIL</p>
+          <div id="prevOut" class="border border-[#AEEED3] rounded-xl overflow-hidden bg-stone-100 min-h-[220px] flex items-center justify-center cursor-zoom-in"><span class="text-stone-400 text-sm p-6 text-center">—</span></div>
         </div>
       </div>
 
       <div class="mt-4">
         <div class="flex justify-between text-sm"><span>Perkiraan kualitas</span><b id="qLabel">—</b></div>
-        <div class="h-2 bg-stone-200 rounded-full mt-1 overflow-hidden"><div id="qBar" class="h-full w-0 bg-green-600 rounded-full transition-all"></div></div>
+        <div class="h-2 bg-stone-200 rounded-full mt-1 overflow-hidden"><div id="qBar" class="h-full w-0 bg-[#287A74] rounded-full transition-all"></div></div>
       </div>
 
       <!-- progress -->
@@ -160,16 +160,16 @@ tailwind.config = { theme: { extend: { colors: { brand: {50:'#f0fdf4',100:'#dcfc
       </div>
 
       <!-- result -->
-      <div id="resultBox" class="hidden mt-4 border rounded-xl p-4 bg-green-50/60 border-green-200">
+      <div id="resultBox" class="hidden mt-4 border rounded-xl p-4 bg-[#AEEED3]/40 border-[#AEEED3]">
         <div class="flex items-center justify-between flex-wrap gap-2">
-          <div><span id="resSize" class="text-2xl font-extrabold text-green-700">—</span><span class="text-sm text-stone-500"> dari <span id="resOrig">—</span></span></div>
-          <span id="resBadge" class="text-xs font-bold px-2 py-1 rounded-full bg-green-600 text-white">✓ di bawah target</span>
+          <div><span id="resSize" class="text-2xl font-extrabold text-[#287A74]">—</span><span class="text-sm text-stone-500"> dari <span id="resOrig">—</span></span></div>
+          <span id="resBadge" class="text-xs font-bold px-2 py-1 rounded-full bg-[#287A74] text-white">✓ di bawah target</span>
         </div>
         <p id="resNote" class="text-xs text-stone-600 mt-1"></p>
         <div class="flex flex-wrap gap-2 mt-3">
-          <button id="btnSave" class="bg-stone-900 text-white font-bold px-5 py-2.5 rounded-xl hover:bg-green-700">Simpan PDF</button>
-          <button id="btnRetarget" class="border font-bold px-4 py-2.5 rounded-xl hover:border-green-600">Ubah target</button>
-          <button id="btnOther" class="border font-bold px-4 py-2.5 rounded-xl hover:border-green-600">File lain</button>
+          <button id="btnSave" class="bg-stone-900 text-white font-bold px-5 py-2.5 rounded-xl hover:bg-[#1F615C]">Simpan PDF</button>
+          <button id="btnRetarget" class="border font-bold px-4 py-2.5 rounded-xl hover:border-[#287A74]">Ubah target</button>
+          <button id="btnOther" class="border font-bold px-4 py-2.5 rounded-xl hover:border-[#287A74]">File lain</button>
         </div>
         <details class="mt-3 text-xs"><summary class="cursor-pointer font-bold">Rincian proses</summary><pre id="resLog" class="mt-1 whitespace-pre-wrap bg-white border rounded-lg p-2 text-stone-600 max-h-40 overflow-auto"></pre></details>
       </div>
@@ -187,7 +187,7 @@ tailwind.config = { theme: { extend: { colors: { brand: {50:'#f0fdf4',100:'#dcfc
     <p class="text-sm font-bold text-stone-500">CARA KERJA</p>
     <h2 class="text-3xl font-extrabold">Dari besar ke pas, tanpa merusak isi</h2>
     <div class="grid md:grid-cols-3 gap-4 mt-5">
-      <div class="bg-white border rounded-2xl p-5"><p class="text-xs font-bold text-stone-400">LANGKAH 1</p><h3 class="font-bold text-lg mt-1">Rapikan tanpa merusak</h3><p class="text-sm text-stone-600 mt-2">Mampat menyusun ulang struktur PDF lebih ringkas. Kalau ini sudah di bawah target, selesai: kualitas tetap asli dan teks masih bisa dicari.</p></div>
+      <div class="bg-white border rounded-2xl p-5"><p class="text-xs font-bold text-stone-400">LANGKAH 1</p><h3 class="font-bold text-lg mt-1">Rapikan tanpa merusak</h3><p class="text-sm text-stone-600 mt-2">Senkirss menyusun ulang struktur PDF lebih ringkas. Kalau ini sudah di bawah target, selesai: kualitas tetap asli dan teks masih bisa dicari.</p></div>
       <div class="bg-white border rounded-2xl p-5"><p class="text-xs font-bold text-stone-400">LANGKAH 2</p><h3 class="font-bold text-lg mt-1">Kecilkan gambarnya saja</h3><p class="text-sm text-stone-600 mt-2">Foto dan hasil scan di dalam PDF dikompres ulang dengan resolusi dan kualitas tertinggi yang masih muat di target. Teks, font, dan link tidak disentuh.</p></div>
       <div class="bg-white border rounded-2xl p-5"><p class="text-xs font-bold text-stone-400">LANGKAH 3</p><h3 class="font-bold text-lg mt-1">Kalau masih kurang, jadikan gambar</h3><p class="text-sm text-stone-600 mt-2">Hanya untuk target sangat kecil. Kamu diberi tahu sebelum ini terjadi, dan bisa dimatikan dengan “Wajib jaga teks”.</p></div>
     </div>
@@ -199,7 +199,7 @@ tailwind.config = { theme: { extend: { colors: { brand: {50:'#f0fdf4',100:'#dcfc
     <h2 class="text-3xl font-extrabold">Yang bikin kesal di kompresor online, tidak ada di sini</h2>
     <div class="bg-white border rounded-2xl mt-5 overflow-hidden">
       <table class="w-full text-sm">
-        <thead><tr class="bg-stone-100 text-left"><th class="p-3">Kompresor online biasa</th><th class="p-3 text-green-700">Mampat</th></tr></thead>
+        <thead><tr class="bg-stone-100 text-left"><th class="p-3">Kompresor online biasa</th><th class="p-3 text-[#287A74]">Senkirss</th></tr></thead>
         <tbody class="divide-y">
           <tr><td class="p-3">Hanya pilihan rendah / sedang / tinggi</td><td class="p-3 font-semibold">Ketik ukuran pasti, sampai satuan KB</td></tr>
           <tr><td class="p-3">File harus diunggah ke server orang lain</td><td class="p-3 font-semibold">Diproses di perangkatmu, tidak ada yang diunggah</td></tr>
@@ -229,13 +229,13 @@ tailwind.config = { theme: { extend: { colors: { brand: {50:'#f0fdf4',100:'#dcfc
   </section>
 
   <footer class="mt-16 border-t pt-6 pb-10 text-sm text-stone-500 flex flex-wrap gap-2 justify-between">
-    <p><b class="text-stone-800">Mampat</b> · kompres PDF sesuai ukuran · mam·pat <i>a</i> padat; rapat</p>
+    <p><b class="text-stone-800">Senkirss</b> · kompres PDF sesuai ukuran</p>
     <p>Clone edukasi — 100% client-side · PDF.js + pdf-lib</p>
   </footer>
 </main>
 
 <!-- overlay lepaskan -->
-<div id="dropOverlay" class="hidden fixed inset-0 z-50 bg-green-600/90 text-white items-center justify-center text-center">
+<div id="dropOverlay" class="hidden fixed inset-0 z-50 bg-[#287A74]/90 text-white items-center justify-center text-center">
   <div><p class="text-4xl font-extrabold">Lepaskan PDF-nya</p><p class="mt-2">jatuhkan di mana saja untuk mulai</p></div>
 </div>
 
