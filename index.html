@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mampat — Kompres PDF Sesuai Ukuran</title>
+<meta name="description" content="Kompres PDF ke ukuran target bebas. 100% di perangkatmu, teks & link tetap utuh.">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#16a34a">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = { theme: { extend: { colors: { brand: {50:'#f0fdf4',100:'#dcfce7',500:'#22c55e',600:'#16a34a',700:'#15803d',900:'#14532d'} } } } }
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+<style>
+  html{scroll-behavior:smooth}
+  .drop-active{outline:3px dashed #16a34a !important;background:#f0fdf4 !important}
+  details[open] summary .plus{transform:rotate(45deg)}
+  .plus{transition:transform .2s}
+  input[type=range]{accent-color:#16a34a}
+  canvas{max-width:100%;height:auto}
+  #dropOverlay{backdrop-filter:blur(2px)}
+</style>
+</head>
+<body class="bg-stone-50 text-stone-900 font-sans antialiased">
+
+<!-- NAV -->
+<header class="sticky top-0 z-40 bg-white/85 backdrop-blur border-b border-stone-200">
+  <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+    <a href="#top" class="text-2xl font-extrabold tracking-tight"><span class="text-green-600">mampat</span><span class="text-stone-400 font-normal text-sm ml-1 hidden sm:inline">kompres PDF sesuai ukuran</span></a>
+    <nav class="hidden md:flex gap-6 text-sm font-medium text-stone-600">
+      <a href="#cara" class="hover:text-green-700">Cara kerja</a>
+      <a href="#beda" class="hover:text-green-700">Bedanya</a>
+      <a href="#faq" class="hover:text-green-700">FAQ</a>
+    </nav>
+    <button id="btnInstall" class="bg-stone-900 text-white text-sm font-semibold px-4 py-2 rounded-full hover:bg-green-700 transition">Pasang aplikasi</button>
+  </div>
+</header>
+
+<main id="top" class="max-w-6xl mx-auto px-4 pb-20">
+
+  <!-- HERO -->
+  <div class="text-center pt-10 pb-6">
+    <span class="inline-flex items-center gap-2 bg-green-100 text-green-800 text-xs font-semibold px-3 py-1.5 rounded-full">🔒 Diproses di perangkatmu · 0 byte dikirim ke server</span>
+    <p class="mt-4 text-sm font-semibold tracking-wide text-stone-500">KOMPRES PDF · TARGET UKURAN BEBAS</p>
+    <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight mt-2">Mau berapa ukurannya?</h1>
+    <p class="max-w-2xl mx-auto mt-4 text-stone-600">Tulis angkanya, <b>Mampat</b> yang mengatur sisanya. <b>200 KB</b> untuk unggah berkas pendaftaran, <b>2 MB</b> untuk lampiran email, <b>50 MB</b> untuk arsip. Hasilnya tidak akan melewati angka itu, dan file kamu tidak pernah meninggalkan perangkat ini.</p>
+    <div class="flex flex-wrap justify-center gap-2 mt-4 text-sm">
+      <span class="text-stone-500 py-1">Contoh:</span>
+      <button data-preset="200|KB" class="preset px-3 py-1 rounded-full border hover:border-green-600 hover:text-green-700">200 KB</button>
+      <button data-preset="2|MB" class="preset px-3 py-1 rounded-full border hover:border-green-600 hover:text-green-700">2 MB</button>
+      <button data-preset="50|MB" class="preset px-3 py-1 rounded-full border hover:border-green-600 hover:text-green-700">50 MB</button>
+    </div>
+  </div>
+
+  <div class="grid md:grid-cols-2 gap-5 mt-6">
+    <!-- LEFT: INPUT -->
+    <section class="space-y-5">
+      <!-- STEP 1 -->
+      <div class="bg-white rounded-2xl border border-stone-200 p-5 shadow-sm">
+        <h2 class="font-bold text-lg"><span class="text-stone-400 font-normal mr-1">1</span> Pilih PDF</h2>
+        <div id="dropzone" class="mt-3 border-2 border-dashed border-stone-300 rounded-xl p-8 text-center cursor-pointer hover:border-green-600 hover:bg-green-50/50 transition">
+          <div id="dzEmpty">
+            <div class="text-4xl">📄</div>
+            <p class="font-bold mt-2">Tarik PDF ke sini <span class="font-normal text-stone-500">atau klik untuk memilih</span></p>
+            <p class="text-xs text-stone-500 mt-1">bisa juga <kbd class="bg-stone-100 border px-1 rounded">Ctrl</kbd>+<kbd class="bg-stone-100 border px-1 rounded">V</kbd> tempel dari clipboard</p>
+          </div>
+          <div id="dzFile" class="hidden text-left">
+            <div class="flex items-start justify-between gap-3">
+              <div class="min-w-0">
+                <p id="fileName" class="font-bold truncate">file.pdf</p>
+                <p id="fileMeta" class="text-sm text-stone-500">—</p>
+                <p id="warnSig" class="hidden mt-2 text-xs bg-amber-50 border border-amber-200 text-amber-800 rounded-lg p-2">⚠️ PDF ini ada tanda tangan digital. Mengompres akan membuat tanda tangannya tidak sah. Tampilan tanda tangan tetap ada.</p>
+                <p id="warnLocked" class="hidden mt-2 text-xs bg-red-50 border border-red-200 text-red-700 rounded-lg p-2">🔒 PDF terkunci kata sandi. Buka dulu kuncinya, lalu coba lagi.</p>
+              </div>
+              <button id="btnChange" class="shrink-0 text-sm font-semibold border px-3 py-1.5 rounded-full hover:border-green-600 hover:text-green-700">Ganti</button>
+            </div>
+            <div id="fileInfo" class="mt-3 bg-stone-50 border rounded-xl p-3 text-sm grid grid-cols-3 gap-2 text-center">
+              <div><div class="text-stone-500 text-xs">Halaman</div><div id="infoPages" class="font-bold">—</div></div>
+              <div><div class="text-stone-500 text-xs">Teks</div><div id="infoText" class="font-bold">—</div></div>
+              <div><div class="text-stone-500 text-xs">Gambar</div><div id="infoImg" class="font-bold">—</div></div>
+            </div>
+            <p class="text-xs text-stone-500 mt-2">Isi file: <span id="infoDesc">menganalisis…</span></p>
+          </div>
+        </div>
+        <input type="file" id="fileInput" accept="application/pdf,.pdf" class="hidden">
+      </div>
+
+      <!-- STEP 2 -->
+      <div class="bg-white rounded-2xl border border-stone-200 p-5 shadow-sm">
+        <h2 class="font-bold text-lg"><span class="text-stone-400 font-normal mr-1">2</span> Ukuran maksimal</h2>
+        <p class="text-xs text-stone-500">1 MB = 1.024 KB</p>
+        <div class="flex gap-2 mt-3">
+          <input id="targetNum" type="number" min="10" value="500" class="w-full text-2xl font-extrabold border rounded-xl px-4 py-2 outline-none focus:border-green-600">
+          <div class="flex rounded-xl border overflow-hidden shrink-0">
+            <button data-unit="KB" class="unitBtn px-4 font-bold bg-green-600 text-white">KB</button>
+            <button data-unit="MB" class="unitBtn px-4 font-bold text-stone-500">MB</button>
+          </div>
+        </div>
+        <input id="targetRange" type="range" min="50" max="5000" value="500" class="w-full mt-3">
+        <div class="flex justify-between text-xs text-stone-500"><span>50 KB</span><span>Maksimal <span id="targetLabel">500 KB</span></span><span>5 MB+</span></div>
+
+        <details class="mt-4 group">
+          <summary class="cursor-pointer text-sm font-bold list-none flex items-center gap-2"><span>⚙️ Pengaturan lanjutan</span><span class="text-stone-400 font-normal">· 150 dpi</span></summary>
+          <div class="mt-3 space-y-4 text-sm">
+            <div>
+              <p class="font-bold">Resolusi tertinggi</p>
+              <p class="text-xs text-stone-500">Diturunkan otomatis hanya kalau target belum tercapai.</p>
+              <div class="flex gap-2 mt-2" id="dpiRow">
+                <button data-dpi="100" class="dpiBtn px-3 py-1.5 rounded-full border">100</button>
+                <button data-dpi="150" class="dpiBtn px-3 py-1.5 rounded-full border bg-stone-900 text-white">150</button>
+                <button data-dpi="200" class="dpiBtn px-3 py-1.5 rounded-full border">200</button>
+                <button data-dpi="300" class="dpiBtn px-3 py-1.5 rounded-full border">300</button>
+              </div>
+            </div>
+            <label class="flex items-start gap-3 cursor-pointer border rounded-xl p-3">
+              <input type="checkbox" id="optBW" class="mt-1 w-4 h-4 accent-green-600">
+              <span><b>Hitam-putih</b><br><span class="text-stone-500 text-xs">Lebih kecil. Pas untuk scan KTP, ijazah, dan dokumen teks.</span></span>
+            </label>
+            <label class="flex items-start gap-3 cursor-pointer border rounded-xl p-3">
+              <input type="checkbox" id="optKeep" class="mt-1 w-4 h-4 accent-green-600" checked>
+              <span><b>Wajib jaga teks</b><br><span class="text-stone-500 text-xs">Jangan pernah ubah halaman jadi gambar. Kalau target tidak tercapai, kamu dapat hasil terkecil yang teksnya tetap utuh.</span></span>
+            </label>
+          </div>
+        </details>
+
+        <button id="btnCompress" disabled class="mt-4 w-full bg-green-600 disabled:bg-stone-200 disabled:text-stone-400 disabled:cursor-not-allowed text-white font-bold text-lg py-3 rounded-xl hover:bg-green-700 transition">Pilih PDF dulu</button>
+        <p class="text-center text-xs text-stone-500 mt-2">Contoh: 12,4 MB → 480 KB · setelah PDF dipilih, pratinjau ikut berubah</p>
+      </div>
+    </section>
+
+    <!-- RIGHT: PREVIEW + RESULT -->
+    <section class="bg-white rounded-2xl border border-stone-200 p-5 shadow-sm flex flex-col">
+      <div class="flex items-center justify-between">
+        <h2 class="font-bold text-lg">Pratinjau halaman 1</h2>
+        <span class="text-xs text-stone-500">Klik gambar untuk memperbesar</span>
+      </div>
+      <div class="grid grid-cols-2 gap-3 mt-3">
+        <div>
+          <p class="text-xs font-bold text-center mb-1 text-stone-500">ASLI</p>
+          <div id="prevOrig" class="border rounded-xl overflow-hidden bg-stone-100 min-h-[220px] flex items-center justify-center cursor-zoom-in"><span class="text-stone-400 text-sm p-6 text-center">Belum ada PDF</span></div>
+        </div>
+        <div>
+          <p class="text-xs font-bold text-center mb-1 text-green-700">HASIL</p>
+          <div id="prevOut" class="border border-green-200 rounded-xl overflow-hidden bg-stone-100 min-h-[220px] flex items-center justify-center cursor-zoom-in"><span class="text-stone-400 text-sm p-6 text-center">—</span></div>
+        </div>
+      </div>
+
+      <div class="mt-4">
+        <div class="flex justify-between text-sm"><span>Perkiraan kualitas</span><b id="qLabel">—</b></div>
+        <div class="h-2 bg-stone-200 rounded-full mt-1 overflow-hidden"><div id="qBar" class="h-full w-0 bg-green-600 rounded-full transition-all"></div></div>
+      </div>
+
+      <!-- progress -->
+      <div id="progBox" class="hidden mt-4">
+        <div class="flex justify-between text-sm"><span id="progLabel">Menyiapkan…</span><b id="progPct">0%</b></div>
+        <div class="h-2 bg-stone-200 rounded-full mt-1 overflow-hidden"><div id="progBar" class="h-full w-0 bg-stone-900 rounded-full transition-all"></div></div>
+        <button id="btnCancel" class="mt-2 text-sm font-semibold border px-4 py-1.5 rounded-full hover:border-red-500 hover:text-red-600">Batalkan</button>
+      </div>
+
+      <!-- result -->
+      <div id="resultBox" class="hidden mt-4 border rounded-xl p-4 bg-green-50/60 border-green-200">
+        <div class="flex items-center justify-between flex-wrap gap-2">
+          <div><span id="resSize" class="text-2xl font-extrabold text-green-700">—</span><span class="text-sm text-stone-500"> dari <span id="resOrig">—</span></span></div>
+          <span id="resBadge" class="text-xs font-bold px-2 py-1 rounded-full bg-green-600 text-white">✓ di bawah target</span>
+        </div>
+        <p id="resNote" class="text-xs text-stone-600 mt-1"></p>
+        <div class="flex flex-wrap gap-2 mt-3">
+          <button id="btnSave" class="bg-stone-900 text-white font-bold px-5 py-2.5 rounded-xl hover:bg-green-700">Simpan PDF</button>
+          <button id="btnRetarget" class="border font-bold px-4 py-2.5 rounded-xl hover:border-green-600">Ubah target</button>
+          <button id="btnOther" class="border font-bold px-4 py-2.5 rounded-xl hover:border-green-600">File lain</button>
+        </div>
+        <details class="mt-3 text-xs"><summary class="cursor-pointer font-bold">Rincian proses</summary><pre id="resLog" class="mt-1 whitespace-pre-wrap bg-white border rounded-lg p-2 text-stone-600 max-h-40 overflow-auto"></pre></details>
+      </div>
+
+      <div class="grid grid-cols-3 gap-2 mt-auto pt-5 text-center text-xs">
+        <div class="border rounded-xl p-3"><div class="text-lg">📵</div><b>0 byte</b> yang dikirim ke server. Semua dikerjakan browser kamu.</div>
+        <div class="border rounded-xl p-3"><div class="text-lg">🔤</div><b>Teks tetap utuh</b> — yang dikecilkan gambarnya.</div>
+        <div class="border rounded-xl p-3"><div class="text-lg">♾️</div><b>Tanpa batas</b> — tanpa akun, kuota, iklan.</div>
+      </div>
+    </section>
+  </div>
+
+  <!-- CARA -->
+  <section id="cara" class="mt-16">
+    <p class="text-sm font-bold text-stone-500">CARA KERJA</p>
+    <h2 class="text-3xl font-extrabold">Dari besar ke pas, tanpa merusak isi</h2>
+    <div class="grid md:grid-cols-3 gap-4 mt-5">
+      <div class="bg-white border rounded-2xl p-5"><p class="text-xs font-bold text-stone-400">LANGKAH 1</p><h3 class="font-bold text-lg mt-1">Rapikan tanpa merusak</h3><p class="text-sm text-stone-600 mt-2">Mampat menyusun ulang struktur PDF lebih ringkas. Kalau ini sudah di bawah target, selesai: kualitas tetap asli dan teks masih bisa dicari.</p></div>
+      <div class="bg-white border rounded-2xl p-5"><p class="text-xs font-bold text-stone-400">LANGKAH 2</p><h3 class="font-bold text-lg mt-1">Kecilkan gambarnya saja</h3><p class="text-sm text-stone-600 mt-2">Foto dan hasil scan di dalam PDF dikompres ulang dengan resolusi dan kualitas tertinggi yang masih muat di target. Teks, font, dan link tidak disentuh.</p></div>
+      <div class="bg-white border rounded-2xl p-5"><p class="text-xs font-bold text-stone-400">LANGKAH 3</p><h3 class="font-bold text-lg mt-1">Kalau masih kurang, jadikan gambar</h3><p class="text-sm text-stone-600 mt-2">Hanya untuk target sangat kecil. Kamu diberi tahu sebelum ini terjadi, dan bisa dimatikan dengan “Wajib jaga teks”.</p></div>
+    </div>
+  </section>
+
+  <!-- BEDA -->
+  <section id="beda" class="mt-16">
+    <p class="text-sm font-bold text-stone-500">BEDANYA</p>
+    <h2 class="text-3xl font-extrabold">Yang bikin kesal di kompresor online, tidak ada di sini</h2>
+    <div class="bg-white border rounded-2xl mt-5 overflow-hidden">
+      <table class="w-full text-sm">
+        <thead><tr class="bg-stone-100 text-left"><th class="p-3">Kompresor online biasa</th><th class="p-3 text-green-700">Mampat</th></tr></thead>
+        <tbody class="divide-y">
+          <tr><td class="p-3">Hanya pilihan rendah / sedang / tinggi</td><td class="p-3 font-semibold">Ketik ukuran pasti, sampai satuan KB</td></tr>
+          <tr><td class="p-3">File harus diunggah ke server orang lain</td><td class="p-3 font-semibold">Diproses di perangkatmu, tidak ada yang diunggah</td></tr>
+          <tr><td class="p-3">Batas ukuran file & kuota harian akun gratis</td><td class="p-3 font-semibold">Tanpa batas, tanpa akun</td></tr>
+          <tr><td class="p-3">Lama menunggu upload lalu download</td><td class="p-3 font-semibold">Langsung diproses, tetap jalan tanpa internet*</td></tr>
+          <tr><td class="p-3">Baru tahu hasilnya buram setelah diunduh</td><td class="p-3 font-semibold">Pratinjau kualitas sebelum menekan tombol</td></tr>
+          <tr><td class="p-3">Iklan & pop-up langganan</td><td class="p-3 font-semibold">Tanpa iklan</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="text-xs text-stone-500 mt-2">*Setelah situs dibuka sekali, file intinya tersimpan di browser (service worker).</p>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq" class="mt-16 max-w-3xl">
+    <p class="text-sm font-bold text-stone-500">FAQ</p>
+    <h2 class="text-3xl font-extrabold">Yang sering ditanyakan</h2>
+    <div class="space-y-2 mt-5 text-sm" id="faqList">
+      <details class="bg-white border rounded-xl p-4"><summary class="font-bold cursor-pointer list-none flex justify-between">Apakah file saya diunggah ke server? <span class="plus text-xl leading-none">+</span></summary><p class="mt-2 text-stone-600">Tidak. PDF dibaca dan dikompres langsung oleh browser di perangkat kamu.</p></details>
+      <details class="bg-white border rounded-xl p-4"><summary class="font-bold cursor-pointer list-none flex justify-between">Apakah teks dan link masih bisa dipakai? <span class="plus text-xl leading-none">+</span></summary><p class="mt-2 text-stone-600">Ya, selama target masih tercapai dengan kompresi gambar saja. Jika target terlalu kecil sehingga halaman harus dijadikan gambar, link & bookmark tetap dipertahankan sebisa mungkin dan kamu diberi tahu. Nyalakan “Wajib jaga teks” untuk melarang itu sepenuhnya.</p></details>
+      <details class="bg-white border rounded-xl p-4"><summary class="font-bold cursor-pointer list-none flex justify-between">Kenapa PDF saya cuma bisa turun sedikit? <span class="plus text-xl leading-none">+</span></summary><p class="mt-2 text-stone-600">Lihat “Isi file” setelah memilih PDF. Kalau isinya kebanyakan teks dan font, tidak banyak yang bisa dikecilkan tanpa mengubah halaman jadi gambar. Patokan: 1 halaman A4 scan yang masih enak dibaca butuh ±30–60 KB.</p></details>
+      <details class="bg-white border rounded-xl p-4"><summary class="font-bold cursor-pointer list-none flex justify-between">Bagaimana dengan tanda tangan digital? <span class="plus text-xl leading-none">+</span></summary><p class="mt-2 text-stone-600">Tanda tangan digital mengunci isi file. Mengubah apa pun membuatnya tidak sah lagi. Aplikasi ini mendeteksinya dan memberi peringatan sebelum memproses.</p></details>
+      <details class="bg-white border rounded-xl p-4"><summary class="font-bold cursor-pointer list-none flex justify-between">Bisa dipakai tanpa internet? <span class="plus text-xl leading-none">+</span></summary><p class="mt-2 text-stone-600">Bisa, setelah dibuka sekali. Tekan “Pasang aplikasi” di Chrome/Edge agar muncul seperti aplikasi biasa.</p></details>
+      <details class="bg-white border rounded-xl p-4"><summary class="font-bold cursor-pointer list-none flex justify-between">Kenapa hasilnya sedikit di bawah target? <span class="plus text-xl leading-none">+</span></summary><p class="mt-2 text-stone-600">Disisakan sedikit ruang pengaman (±2%) supaya hasilnya tidak pernah melewati batas. Dari semua pengaturan yang muat, dipilih yang kualitasnya paling tinggi.</p></details>
+      <details class="bg-white border rounded-xl p-4"><summary class="font-bold cursor-pointer list-none flex justify-between">Bisa untuk PDF yang dikunci kata sandi? <span class="plus text-xl leading-none">+</span></summary><p class="mt-2 text-stone-600">Belum. Buka dulu kuncinya dengan aplikasi pembuatnya, lalu kompres di sini.</p></details>
+    </div>
+  </section>
+
+  <footer class="mt-16 border-t pt-6 pb-10 text-sm text-stone-500 flex flex-wrap gap-2 justify-between">
+    <p><b class="text-stone-800">Mampat</b> · kompres PDF sesuai ukuran · mam·pat <i>a</i> padat; rapat</p>
+    <p>Clone edukasi — 100% client-side · PDF.js + pdf-lib</p>
+  </footer>
+</main>
+
+<!-- overlay lepaskan -->
+<div id="dropOverlay" class="hidden fixed inset-0 z-50 bg-green-600/90 text-white items-center justify-center text-center">
+  <div><p class="text-4xl font-extrabold">Lepaskan PDF-nya</p><p class="mt-2">jatuhkan di mana saja untuk mulai</p></div>
+</div>
+
+<!-- lightbox -->
+<div id="lightbox" class="hidden fixed inset-0 z-50 bg-black/80 items-center justify-center p-4"><img id="lbImg" class="max-h-[90vh] max-w-full rounded-lg bg-white" src=""></div>
+
+<script src="app.js"></script>
+</body>
+</html>
